@@ -1,8 +1,9 @@
-package com.example.easynotes.repository;
+package com.macys.mtech.notes.repository;
 
-import com.example.easynotes.model.Note;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import com.macys.mtech.notes.model.Note;
 
 /**
  * Created by rajeevkumarsingh on 27/06/17.

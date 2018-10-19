@@ -1,0 +1,69 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: poconsumer-v9
+  labels: 
+    app: poconsumer
+    version: "1.0"
+    visualize: "true"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: poconsumer
+        serving: "true"
+        version: "1.0"
+        visualize: "true"
+    spec:
+      containers:
+      - name: poconsumer
+        image: gcr.io/mtech-wms-backstage-poc/po_consumer:1.9
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 90
+        readinessProbe:
+          httpGet:
+            path: /info
+            port: 8080
+          initialDelaySeconds: 90
+        env:
+        - name: SERVER_PORT
+          value: "8080"
+        - name: SPRING_DATASOURCE_URL
+          value: jdbc:mysql://localhost:3306/backstage?useUnicode=true&characterEncoding=utf8&useSSL=false
+        - name: DB_NAME
+          value: backstage
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: cloudsql-backstage-db-credentials
+              key: username
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: cloudsql-backstage-db-credentials
+              key: password 
+        ports:
+        - containerPort: 8080
+      - image: b.gcr.io/cloudsql-docker/gce-proxy:1.12
+        name: cloudsql-proxy
+        command: ["/cloud_sql_proxy", "--dir=/cloudsql", "-instances=mtech-wms-backstage-poc:us-east4:backstage-db-1=tcp:3306", "-credential_file=/secrets/cloudsql/credentials.json"]
+        securityContext:
+          runAsUser: 2  # non-root user
+          allowPrivilegeEscalation: false
+        volumeMounts:
+          - name: cloudsql-instance-credentials
+            mountPath: /secrets/cloudsql
+            readOnly: true
+          - name: ssl-certs
+            mountPath: /etc/ssl/certs
+      volumes:
+        - name: cloudsql-instance-credentials
+          secret:
+            secretName: cloudsql-instance-credentials
+        - name: ssl-certs
+          hostPath:
+            path: /etc/ssl/certs

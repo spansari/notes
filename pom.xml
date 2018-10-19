@@ -3,12 +3,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.example</groupId>
-	<artifactId>easy-notes</artifactId>
+	<groupId>com.macys.mtech</groupId>
+	<artifactId>notes</artifactId>
 	<version>1.0.0</version>
 	<packaging>jar</packaging>
 
-	<name>easy-notes</name>
+	<name>notes</name>
 	<description>Rest API for a Simple Note Taking Application</description>
 
 	<parent>
@@ -32,6 +32,29 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+		   <groupId>io.springfox</groupId>
+		   <artifactId>springfox-swagger2</artifactId>
+		   <version>2.7.0</version>
+		</dependency>
+		<dependency>
+		   <groupId>io.springfox</groupId>
+		   <artifactId>springfox-swagger-ui</artifactId>
+		   <version>2.7.0</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.springframework.kafka</groupId>
+		    <artifactId>spring-kafka</artifactId>
+		    <version>2.1.5.RELEASE</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>com.jayway.jsonpath</groupId>
+		    <artifactId>json-path</artifactId>
+		    <version>2.4.0</version>
 		</dependency>
 
 		<dependency>

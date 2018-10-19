@@ -1,17 +1,18 @@
-package com.example.easynotes.controller;
+package com.macys.mtech.notes.controller;
 
-import com.example.easynotes.exception.ResourceNotFoundException;
-import com.example.easynotes.model.Note;
-import com.example.easynotes.repository.NoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import com.macys.mtech.notes.exception.ResourceNotFoundException;
+import com.macys.mtech.notes.model.Note;
+import com.macys.mtech.notes.repository.NoteRepository;
 
 import javax.validation.Valid;
 import java.util.List;
 
 /**
- * Created by rajeevkumarsingh on 27/06/17.
+ * Created by Sanjiv Pansari on 10/02/18.
  */
 @RestController
 @RequestMapping("/api")
@@ -20,23 +21,23 @@ public class NoteController {
     @Autowired
     NoteRepository noteRepository;
 
-    @GetMapping("/notes")
+    @GetMapping("/")
     public List<Note> getAllNotes() {
         return noteRepository.findAll();
     }
 
-    @PostMapping("/notes")
+    @PostMapping("/")
     public Note createNote(@Valid @RequestBody Note note) {
         return noteRepository.save(note);
     }
 
-    @GetMapping("/notes/{id}")
+    @GetMapping("/{id}")
     public Note getNoteById(@PathVariable(value = "id") Long noteId) {
         return noteRepository.findById(noteId)
                 .orElseThrow(() -> new ResourceNotFoundException("Note", "id", noteId));
     }
 
-    @PutMapping("/notes/{id}")
+    @PutMapping("/{id}")
     public Note updateNote(@PathVariable(value = "id") Long noteId,
                                            @Valid @RequestBody Note noteDetails) {
 
@@ -50,7 +51,7 @@ public class NoteController {
         return updatedNote;
     }
 
-    @DeleteMapping("/notes/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteNote(@PathVariable(value = "id") Long noteId) {
         Note note = noteRepository.findById(noteId)
                 .orElseThrow(() -> new ResourceNotFoundException("Note", "id", noteId));

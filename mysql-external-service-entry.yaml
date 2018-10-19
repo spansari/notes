@@ -1,0 +1,14 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: mysql-external
+spec:
+  hosts:
+  - backstage-db-1
+  addresses:
+  - 35.186.184.74/32
+  ports:
+  - name: TCP
+    number: 3306
+    protocol: TCP
+  location: MESH_EXTERNAL

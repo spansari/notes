@@ -31,10 +31,24 @@ public class IndexController {
     @Value("${config-service-url}")
     private String configServiceUrl;
     
+    @Value("${hello-service-url}")
+    private String helloServiceUrl;
+    
+    
     @GetMapping("/ping")
     public String ping() {
     	return "OK: Notes Service is working fine";
     }
+    
+    @GetMapping("/hello")
+    public String sayHello() {
+    	RestTemplate restTemplate = new RestTemplate();
+    	ResponseEntity<String> response
+    	  = restTemplate.getForEntity(helloServiceUrl, String.class);
+    	
+    	return response.getBody();
+    }
+
     
     @GetMapping("/publish/hello")
     public String publishHello() {

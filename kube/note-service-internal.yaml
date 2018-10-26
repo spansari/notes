@@ -1,0 +1,16 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: note-service-internal
+spec:
+  hosts:
+  - note-service
+  http:
+  - match:
+    - uri:
+        exact: /notes/api
+    - uri:
+        prefix: /notes    
+    route:
+    - destination:
+        host: note-service

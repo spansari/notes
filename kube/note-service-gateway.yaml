@@ -25,13 +25,9 @@ spec:
   http:
   - match:
     - uri:
-        exact: /api/notes
+        exact: /notes/api
     - uri:
-        prefix: /api/publish    
-    - uri:
-        exact: /hellonote
+        prefix: /notes    
     route:
     - destination:
         host: note-service
-        port:
-          number: 8080

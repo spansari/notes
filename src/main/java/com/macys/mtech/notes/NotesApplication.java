@@ -1,5 +1,6 @@
 package com.macys.mtech.notes;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,6 +16,7 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 
+import org.springframework.web.client.RestTemplate;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
@@ -22,7 +24,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
 @EnableJpaAuditing
-@Configuration
 @EnableSwagger2
 public class NotesApplication {
 
@@ -33,6 +34,15 @@ public class NotesApplication {
 		
 		SpringApplication.run(NotesApplication.class, args);
 	}
+
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate() {
+            {
+                setInterceptors(Collections.singletonList(new CorrelationIdInterceptor()));
+            }
+        };
+    }
 	
 	@Bean
 	public Docket productApi() {

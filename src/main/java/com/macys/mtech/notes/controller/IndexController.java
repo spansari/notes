@@ -27,33 +27,38 @@ public class IndexController {
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
 
+    @Autowired
+	RestTemplate restTemplate;
+
     
     @Value("${config-service-url}")
     private String configServiceUrl;
     
     @Value("${hello-service-url}")
     private String helloServiceUrl;
-    
-    
-    @GetMapping("/ping")
+
+	@Value("${spring.datasource.url}")
+	private String dbUrl;
+
+	@Value("${spring.datasource.username}")
+	private String dbUser;
+
+	@GetMapping("/ping")
     public String ping() {
     	return "OK: Notes Service is working fine";
     }
     
     @GetMapping("/hello")
     public String sayHello() {
-    	RestTemplate restTemplate = new RestTemplate();
     	ResponseEntity<String> response
     	  = restTemplate.getForEntity(helloServiceUrl, String.class);
     	
-    	return response.getBody();
+    	return response.getBody() + " : " + dbUrl + " : ";
     }
 
     
     @GetMapping("/publish/hello")
     public String publishHello() {
-    	RestTemplate restTemplate = new RestTemplate();
-    	
     	String message = "hello Sanjiv:"+ LocalTime.now();
     	ResponseEntity<String> response
     	  = restTemplate.getForEntity(configServiceUrl + "/app/BACKSTAGE/module/PUBSUB/configType/GLOBAL/configKey/MESSAGING", String.class);
@@ -78,8 +83,7 @@ public class IndexController {
     
     @PostMapping("/publish/message")
     public String publishMessage(@Valid @RequestBody String message) {
-    	RestTemplate restTemplate = new RestTemplate();
-    	
+
     	ResponseEntity<String> response
     	  = restTemplate.getForEntity(configServiceUrl + "/app/BACKSTAGE/module/PUBSUB/configType/GLOBAL/configKey/MESSAGING", String.class);
     	

@@ -37,11 +37,11 @@ public class IndexController {
     @Value("${hello-service-url}")
     private String helloServiceUrl;
 
-	@Value("${spring.datasource.url}")
-	private String dbUrl;
-
 	@Value("${spring.datasource.username}")
 	private String dbUser;
+
+	@Value("${messaging.config}")
+	private String messagingConfig;
 
 	@GetMapping("/ping")
     public String ping() {
@@ -53,29 +53,22 @@ public class IndexController {
     	ResponseEntity<String> response
     	  = restTemplate.getForEntity(helloServiceUrl, String.class);
     	
-    	return response.getBody() + " : " + dbUrl + " : ";
+    	return response.getBody() + " : " + dbUser + " : ";
     }
 
     
     @GetMapping("/publish/hello")
     public String publishHello() {
     	String message = "hello Sanjiv:"+ LocalTime.now();
-    	ResponseEntity<String> response
-    	  = restTemplate.getForEntity(configServiceUrl + "/app/BACKSTAGE/module/PUBSUB/configType/GLOBAL/configKey/MESSAGING", String.class);
-    	
-    	String configStr = response.getBody();
-    	System.out.println("configStr:"+ configStr);
+
+    	System.out.println("messagingConfig:"+ messagingConfig);
     
-    	
-    	String configValue = JsonPath.parse(configStr).read("$.configValue");
-    	System.out.println("configValue:"+ configValue);
-    	
-    	String enablePublish = JsonPath.parse(configValue).read("$.enablePublish");
+    	String enablePublish = JsonPath.parse(messagingConfig).read("$.enablePublish");
     	
     	if ("Yes".equalsIgnoreCase(enablePublish)) {
-    		String topicName = JsonPath.parse(configValue).read("$.topicName");
+    		String topicName = JsonPath.parse(messagingConfig).read("$.topicName");
     		System.out.println("topicName:"+ topicName);	
-    		sendMessage(topicName, message);
+    		//sendMessage(topicName, message);
     	}
     	
     	return message;
@@ -85,19 +78,15 @@ public class IndexController {
     public String publishMessage(@Valid @RequestBody String message) {
 
     	ResponseEntity<String> response
-    	  = restTemplate.getForEntity(configServiceUrl + "/app/BACKSTAGE/module/PUBSUB/configType/GLOBAL/configKey/MESSAGING", String.class);
+    	  = restTemplate.getForEntity(configServiceUrl + "/application/application/profile/default/label/master/key/messaging.config", String.class);
     	
     	String configStr = response.getBody();
     	System.out.println("configStr:"+ configStr);
-    
-    	
-    	String configValue = JsonPath.parse(configStr).read("$.configValue");
-    	System.out.println("configValue:"+ configValue);
-    	
-    	String enablePublish = JsonPath.parse(configValue).read("$.enablePublish");
+
+    	String enablePublish = JsonPath.parse(configStr).read("$.enablePublish");
     	
     	if ("Yes".equalsIgnoreCase(enablePublish)) {
-    		String topicName = JsonPath.parse(configValue).read("$.topicName");
+    		String topicName = JsonPath.parse(configStr).read("$.topicName");
     		System.out.println("topicName:"+ topicName);	
     		sendMessage(topicName, message);
     	}
